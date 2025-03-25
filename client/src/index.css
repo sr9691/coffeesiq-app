@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+  
+  /* Font weight classes are already defined by Tailwind */
+}
+
+@layer components {
+  /* Common button styles */
+  .btn-primary {
+    @apply bg-coffee-brown text-coffee-light hover:bg-opacity-90 transition-colors duration-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-coffee-cream text-coffee-brown hover:bg-opacity-90 transition-colors duration-200;
+  }
+  
+  .btn-outline {
+    @apply border border-coffee-cream bg-transparent text-coffee-brown hover:bg-coffee-cream/10 transition-colors duration-200;
+  }
+  
+  .btn-danger {
+    @apply bg-coffee-red text-white hover:bg-opacity-90 transition-colors duration-200;
+  }
+  
+  /* Card and container styles */
+  .card {
+    @apply bg-white rounded-lg shadow-md p-5 border border-coffee-cream/50;
+  }
+  
+  .panel {
+    @apply bg-white rounded-lg p-4 shadow-sm border border-coffee-cream/30;
+  }
+  
+  /* Form element styles */
+  .input-field {
+    @apply border border-coffee-cream rounded-md px-3 py-2 focus:ring-2 focus:ring-coffee-brown focus:border-transparent outline-none;
+  }
+  
+  .select-field {
+    @apply border border-coffee-cream rounded-md px-3 py-2 focus:ring-2 focus:ring-coffee-brown focus:border-transparent outline-none;
+  }
+  
+  /* Badge styles for flavor notes, etc. */
+  .badge-default {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-coffee-brown focus:ring-offset-2;
+  }
+  
+  .badge-primary {
+    @apply badge-default bg-coffee-brown text-coffee-light;
+  }
+  
+  .badge-secondary {
+    @apply badge-default bg-coffee-cream text-coffee-brown;
+  }
+  
+  .badge-outline {
+    @apply badge-default bg-transparent border border-coffee-cream text-coffee-brown;
+  }
+}
+
+@layer utilities {
+  /* Transitions and animations */
+  .transition-fast {
+    transition-duration: 0.15s;
+  }
+  
+  .transition-medium {
+    transition-duration: 0.3s;
+  }
+  
+  .transition-slow {
+    transition-duration: 0.5s;
+  }
+  
+  /* Text styling */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .text-ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}

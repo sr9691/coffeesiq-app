@@ -1,0 +1,72 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#4A3728" />
+  
+  <!-- Coffee Bean Pattern -->
+  <g opacity="0.15" fill="#F3F1E9">
+    <!-- Row 1 -->
+    <ellipse cx="50" cy="50" rx="30" ry="20" transform="rotate(45 50 50)" />
+    <ellipse cx="150" cy="50" rx="30" ry="20" transform="rotate(45 150 50)" />
+    <ellipse cx="250" cy="50" rx="30" ry="20" transform="rotate(45 250 50)" />
+    <ellipse cx="350" cy="50" rx="30" ry="20" transform="rotate(45 350 50)" />
+    <ellipse cx="450" cy="50" rx="30" ry="20" transform="rotate(45 450 50)" />
+    <ellipse cx="550" cy="50" rx="30" ry="20" transform="rotate(45 550 50)" />
+    <ellipse cx="650" cy="50" rx="30" ry="20" transform="rotate(45 650 50)" />
+    <ellipse cx="750" cy="50" rx="30" ry="20" transform="rotate(45 750 50)" />
+    
+    <!-- Row 2 -->
+    <ellipse cx="100" cy="150" rx="30" ry="20" transform="rotate(-45 100 150)" />
+    <ellipse cx="200" cy="150" rx="30" ry="20" transform="rotate(-45 200 150)" />
+    <ellipse cx="300" cy="150" rx="30" ry="20" transform="rotate(-45 300 150)" />
+    <ellipse cx="400" cy="150" rx="30" ry="20" transform="rotate(-45 400 150)" />
+    <ellipse cx="500" cy="150" rx="30" ry="20" transform="rotate(-45 500 150)" />
+    <ellipse cx="600" cy="150" rx="30" ry="20" transform="rotate(-45 600 150)" />
+    <ellipse cx="700" cy="150" rx="30" ry="20" transform="rotate(-45 700 150)" />
+    
+    <!-- Row 3 -->
+    <ellipse cx="50" cy="250" rx="30" ry="20" transform="rotate(45 50 250)" />
+    <ellipse cx="150" cy="250" rx="30" ry="20" transform="rotate(45 150 250)" />
+    <ellipse cx="250" cy="250" rx="30" ry="20" transform="rotate(45 250 250)" />
+    <ellipse cx="350" cy="250" rx="30" ry="20" transform="rotate(45 350 250)" />
+    <ellipse cx="450" cy="250" rx="30" ry="20" transform="rotate(45 450 250)" />
+    <ellipse cx="550" cy="250" rx="30" ry="20" transform="rotate(45 550 250)" />
+    <ellipse cx="650" cy="250" rx="30" ry="20" transform="rotate(45 650 250)" />
+    <ellipse cx="750" cy="250" rx="30" ry="20" transform="rotate(45 750 250)" />
+    
+    <!-- Row 4 -->
+    <ellipse cx="100" cy="350" rx="30" ry="20" transform="rotate(-45 100 350)" />
+    <ellipse cx="200" cy="350" rx="30" ry="20" transform="rotate(-45 200 350)" />
+    <ellipse cx="300" cy="350" rx="30" ry="20" transform="rotate(-45 300 350)" />
+    <ellipse cx="400" cy="350" rx="30" ry="20" transform="rotate(-45 400 350)" />
+    <ellipse cx="500" cy="350" rx="30" ry="20" transform="rotate(-45 500 350)" />
+    <ellipse cx="600" cy="350" rx="30" ry="20" transform="rotate(-45 600 350)" />
+    <ellipse cx="700" cy="350" rx="30" ry="20" transform="rotate(-45 700 350)" />
+    
+    <!-- Row 5 -->
+    <ellipse cx="50" cy="450" rx="30" ry="20" transform="rotate(45 50 450)" />
+    <ellipse cx="150" cy="450" rx="30" ry="20" transform="rotate(45 150 450)" />
+    <ellipse cx="250" cy="450" rx="30" ry="20" transform="rotate(45 250 450)" />
+    <ellipse cx="350" cy="450" rx="30" ry="20" transform="rotate(45 350 450)" />
+    <ellipse cx="450" cy="450" rx="30" ry="20" transform="rotate(45 450 450)" />
+    <ellipse cx="550" cy="450" rx="30" ry="20" transform="rotate(45 550 450)" />
+    <ellipse cx="650" cy="450" rx="30" ry="20" transform="rotate(45 650 450)" />
+    <ellipse cx="750" cy="450" rx="30" ry="20" transform="rotate(45 750 450)" />
+    
+    <!-- Row 6 -->
+    <ellipse cx="100" cy="550" rx="30" ry="20" transform="rotate(-45 100 550)" />
+    <ellipse cx="200" cy="550" rx="30" ry="20" transform="rotate(-45 200 550)" />
+    <ellipse cx="300" cy="550" rx="30" ry="20" transform="rotate(-45 300 550)" />
+    <ellipse cx="400" cy="550" rx="30" ry="20" transform="rotate(-45 400 550)" />
+    <ellipse cx="500" cy="550" rx="30" ry="20" transform="rotate(-45 500 550)" />
+    <ellipse cx="600" cy="550" rx="30" ry="20" transform="rotate(-45 600 550)" />
+    <ellipse cx="700" cy="550" rx="30" ry="20" transform="rotate(-45 700 550)" />
+  </g>
+  
+  <!-- Steam/Flow Lines -->
+  <g opacity="0.2" stroke="#9E2B25" stroke-width="3" stroke-linecap="round" fill="none">
+    <path d="M100,100 C150,50 200,150 250,100 C300,50 350,150 400,100" />
+    <path d="M500,200 C550,150 600,250 650,200 C700,150 750,250 800,200" />
+    <path d="M200,300 C250,250 300,350 350,300 C400,250 450,350 500,300" />
+    <path d="M300,400 C350,350 400,450 450,400 C500,350 550,450 600,400" />
+    <path d="M100,500 C150,450 200,550 250,500 C300,450 350,550 400,500" />
+  </g>
+</svg>

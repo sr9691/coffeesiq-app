@@ -1,0 +1,54 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#E4DFCA" />
+  
+  <!-- Coffee Beans Pattern -->
+  <g fill="#4A3728" opacity="0.15">
+    <!-- Row 1 -->
+    <ellipse cx="50" cy="50" rx="20" ry="12" transform="rotate(45 50 50)" />
+    <ellipse cx="120" cy="50" rx="20" ry="12" transform="rotate(45 120 50)" />
+    <ellipse cx="190" cy="50" rx="20" ry="12" transform="rotate(45 190 50)" />
+    <ellipse cx="260" cy="50" rx="20" ry="12" transform="rotate(45 260 50)" />
+    <ellipse cx="330" cy="50" rx="20" ry="12" transform="rotate(45 330 50)" />
+    
+    <!-- Row 2 -->
+    <ellipse cx="85" cy="100" rx="20" ry="12" transform="rotate(-45 85 100)" />
+    <ellipse cx="155" cy="100" rx="20" ry="12" transform="rotate(-45 155 100)" />
+    <ellipse cx="225" cy="100" rx="20" ry="12" transform="rotate(-45 225 100)" />
+    <ellipse cx="295" cy="100" rx="20" ry="12" transform="rotate(-45 295 100)" />
+    <ellipse cx="365" cy="100" rx="20" ry="12" transform="rotate(-45 365 100)" />
+    
+    <!-- Row 3 -->
+    <ellipse cx="50" cy="150" rx="20" ry="12" transform="rotate(45 50 150)" />
+    <ellipse cx="120" cy="150" rx="20" ry="12" transform="rotate(45 120 150)" />
+    <ellipse cx="190" cy="150" rx="20" ry="12" transform="rotate(45 190 150)" />
+    <ellipse cx="260" cy="150" rx="20" ry="12" transform="rotate(45 260 150)" />
+    <ellipse cx="330" cy="150" rx="20" ry="12" transform="rotate(45 330 150)" />
+    
+    <!-- Row 4 -->
+    <ellipse cx="85" cy="200" rx="20" ry="12" transform="rotate(-45 85 200)" />
+    <ellipse cx="155" cy="200" rx="20" ry="12" transform="rotate(-45 155 200)" />
+    <ellipse cx="225" cy="200" rx="20" ry="12" transform="rotate(-45 225 200)" />
+    <ellipse cx="295" cy="200" rx="20" ry="12" transform="rotate(-45 295 200)" />
+    <ellipse cx="365" cy="200" rx="20" ry="12" transform="rotate(-45 365 200)" />
+    
+    <!-- Row 5 -->
+    <ellipse cx="50" cy="250" rx="20" ry="12" transform="rotate(45 50 250)" />
+    <ellipse cx="120" cy="250" rx="20" ry="12" transform="rotate(45 120 250)" />
+    <ellipse cx="190" cy="250" rx="20" ry="12" transform="rotate(45 190 250)" />
+    <ellipse cx="260" cy="250" rx="20" ry="12" transform="rotate(45 260 250)" />
+    <ellipse cx="330" cy="250" rx="20" ry="12" transform="rotate(45 330 250)" />
+  </g>
+  
+  <!-- Coffee Cup - Center -->
+  <g transform="translate(200, 150) scale(2.5)">
+    <!-- Cup -->
+    <path d="M17 8h1a4 4 0 1 1 0 8h-1 M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" fill="none" stroke="#4A3728" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Steam Lines -->
+    <path d="M6 2v2 M10 2v2 M14 2v2" fill="none" stroke="#9E2B25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  
+  <!-- Text "Coffee Beans" -->
+  <text x="200" y="270" font-family="Arial" font-size="18" text-anchor="middle" fill="#4A3728">Coffee Beans</text>
+</svg>
