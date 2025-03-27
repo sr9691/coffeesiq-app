@@ -38,20 +38,20 @@ export class DatabaseStorage implements IStorage {
     this.initializeDefaultData();
   }
 
-  // BrewingMethods functionality removed
-
   // Initialize flavor notes
-  private async initFlavorNotes() {
-    const existingNotes = await db.select().from(flavorNotes);
+  private async initFlavorNotes(): Promise<void> {
+    // Get all existing flavor note names
+    const existingNotes = await db.select({ name: flavorNotes.name }).from(flavorNotes);
+    const existingNoteNames = new Set(existingNotes.map(note => note.name));
     
-    // Only initialize if the table is empty
-    if (existingNotes.length === 0) {
-      const notes = [
-        "Floral", "Fruity", "Citrus", "Chocolate", "Nutty", 
-        "Caramel", "Honey", "Berry", "Earthy", "Spicy"
-      ];
+    const notes = [
+      "Floral", "Fruity", "Citrus", "Chocolate", "Nutty", 
+      "Caramel", "Honey", "Berry", "Earthy", "Spicy"
+    ];
 
-      for (const note of notes) {
+    for (const note of notes) {
+      // Only insert if this note doesn't already exist
+      if (!existingNoteNames.has(note)) {
         await db.insert(flavorNotes).values({ name: note });
       }
     }
@@ -531,7 +531,6 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
-  // Quiz option methods
   async getQuizOptions(questionId: string): Promise<QuizOption[]> {
     return await db.select()
       .from(quizOptions)
@@ -546,107 +545,139 @@ export class DatabaseStorage implements IStorage {
   
   // Initialize all default data
   async initializeDefaultData(): Promise<void> {
-    // Initialize flavor notes (brewing methods removed)
-    await this.initFlavorNotes();
+    try {
+      // Initialize flavor notes (brewing methods removed)
+      await this.initFlavorNotes();
+      
+      try {
+        // Initialize quiz questions and options - catch errors to prevent app from crashing
+        await this.initQuizQuestions();
+      } catch (error) {
+        console.error("Error initializing quiz questions:", error.message);
+      }
+      
+      try {
+        // Initialize mascot guides - catch errors to prevent app from crashing
+        await this.initMascotGuides();
+      } catch (error) {
+        console.error("Error initializing mascot guides:", error.message);
+      }
+      
+      try {
+        // Initialize shop products - catch errors to prevent app from crashing
+        await this.initShopProducts();
+      } catch (error) {
+        console.error("Error initializing shop products:", error.message);
+      }
+    } catch (error) {
+      // Log the error but don't crash the server
+      console.error("Error initializing data:", error.message);
+    }
     
-    // Initialize quiz questions and options
-    await this.initQuizQuestions();
-    
-    // Initialize mascot guides
-    await this.initMascotGuides();
-    
-    // Initialize shop products
-    await this.initShopProducts();
+    console.log("Database initialization completed - errors were handled gracefully");
   }
-  
+
   // Initialize quiz questions and options
   private async initQuizQuestions(): Promise<void> {
-    const existingQuestions = await db.select().from(quizQuestions);
+    // Get all existing question IDs for checking
+    const existingQuestions = await db.select({ questionId: quizQuestions.questionId }).from(quizQuestions);
+    const existingQuestionIds = new Set(existingQuestions.map(q => q.questionId));
     
-    // Only initialize if the table is empty
-    if (existingQuestions.length === 0) {
-      const questions = [
-        {
-          questionId: 'roast-level',
-          question: 'What roast level do you prefer?',
-          description: 'Roast levels affect the flavor, acidity, and body of coffee.',
-          answerType: 'single',
-          sortOrder: 1,
-          options: [
-            { optionId: 'light', text: 'Light Roast', value: 'light', icon: '☀️', sortOrder: 1 },
-            { optionId: 'medium', text: 'Medium Roast', value: 'medium', icon: '🌤️', sortOrder: 2 },
-            { optionId: 'medium-dark', text: 'Medium-Dark Roast', value: 'medium-dark', icon: '⛅', sortOrder: 3 },
-            { optionId: 'dark', text: 'Dark Roast', value: 'dark', icon: '🌙', sortOrder: 4 }
-          ]
-        },
-        {
-          questionId: 'flavor-profile',
-          question: 'What flavor notes do you enjoy?',
-          description: 'Select all that apply.',
-          answerType: 'multiple',
-          sortOrder: 2,
-          options: [
-            { optionId: 'fruity', text: 'Fruity', value: 'fruity', icon: '🍎', sortOrder: 1 },
-            { optionId: 'nutty', text: 'Nutty', value: 'nutty', icon: '🥜', sortOrder: 2 },
-            { optionId: 'chocolate', text: 'Chocolate', value: 'chocolate', icon: '🍫', sortOrder: 3 },
-            { optionId: 'caramel', text: 'Caramel', value: 'caramel', icon: '🍯', sortOrder: 4 },
-            { optionId: 'floral', text: 'Floral', value: 'floral', icon: '🌸', sortOrder: 5 },
-            { optionId: 'spicy', text: 'Spicy', value: 'spicy', icon: '🌶️', sortOrder: 6 }
-          ]
-        },
-        {
-          questionId: 'acidity',
-          question: 'How do you feel about acidity?',
-          description: 'Acidity contributes to the brightness and liveliness of coffee.',
-          answerType: 'single',
-          sortOrder: 3,
-          options: [
-            { optionId: 'low', text: 'Low acidity', value: 'low', icon: '😌', sortOrder: 1 },
-            { optionId: 'medium', text: 'Medium acidity', value: 'medium', icon: '😊', sortOrder: 2 },
-            { optionId: 'high', text: 'High acidity', value: 'high', icon: '😃', sortOrder: 3 }
-          ]
-        },
-        {
-          questionId: 'brew-method',
-          question: 'How do you usually brew your coffee?',
-          description: 'Different brewing methods highlight different characteristics.',
-          answerType: 'single',
-          sortOrder: 4,
-          options: [
-            { optionId: 'drip', text: 'Drip/Pour Over', value: 'drip', icon: '☕', sortOrder: 1 },
-            { optionId: 'espresso', text: 'Espresso', value: 'espresso', icon: '💪', sortOrder: 2 },
-            { optionId: 'french-press', text: 'French Press', value: 'french-press', icon: '🧋', sortOrder: 3 },
-            { optionId: 'aeropress', text: 'AeroPress', value: 'aeropress', icon: '🥤', sortOrder: 4 },
-            { optionId: 'cold-brew', text: 'Cold Brew', value: 'cold-brew', icon: '❄️', sortOrder: 5 }
-          ]
-        },
-        {
-          questionId: 'origin',
-          question: 'Do you have a preferred coffee origin?',
-          description: 'Coffee beans from different regions have distinctive characteristics.',
-          answerType: 'single',
-          sortOrder: 5,
-          options: [
-            { optionId: 'latin-america', text: 'Latin America', value: 'latin-america', icon: '🌎', sortOrder: 1 },
-            { optionId: 'africa', text: 'Africa', value: 'africa', icon: '🌍', sortOrder: 2 },
-            { optionId: 'asia', text: 'Asia/Pacific', value: 'asia', icon: '🌏', sortOrder: 3 },
-            { optionId: 'no-preference', text: 'No preference', value: 'no-preference', icon: '🌐', sortOrder: 4 }
-          ]
-        }
-      ];
-      
-      // Insert questions and their options
-      for (const question of questions) {
-        const insertedQuestion = await db.insert(quizQuestions).values({
+    // Get all existing option IDs for checking - include questionId for composite key check
+    const existingOptions = await db.select({ 
+      questionId: quizOptions.questionId, 
+      optionId: quizOptions.optionId 
+    }).from(quizOptions);
+    const existingOptionIds = new Set(existingOptions.map(o => `${o.questionId}-${o.optionId}`));
+    
+    const questions = [
+      {
+        questionId: 'roast-level',
+        question: 'What roast level do you prefer?',
+        description: 'Roast levels affect the flavor, acidity, and body of coffee.',
+        answerType: 'single',
+        sortOrder: 1,
+        options: [
+          { optionId: 'light', text: 'Light Roast', value: 'light', icon: '☀️', sortOrder: 1 },
+          { optionId: 'medium', text: 'Medium Roast', value: 'medium', icon: '🌤️', sortOrder: 2 },
+          { optionId: 'medium-dark', text: 'Medium-Dark Roast', value: 'medium-dark', icon: '⛅', sortOrder: 3 },
+          { optionId: 'dark', text: 'Dark Roast', value: 'dark', icon: '🌙', sortOrder: 4 }
+        ]
+      },
+      {
+        questionId: 'flavor-profile',
+        question: 'What flavor profiles do you enjoy?',
+        description: 'Select all that apply to your taste preferences.',
+        answerType: 'multiple',
+        sortOrder: 2,
+        options: [
+          { optionId: 'fruity', text: 'Fruity & Bright', value: 'fruity', icon: '🍎', sortOrder: 1 },
+          { optionId: 'nutty', text: 'Nutty & Chocolatey', value: 'nutty', icon: '🍫', sortOrder: 2 },
+          { optionId: 'floral', text: 'Floral & Aromatic', value: 'floral', icon: '🌸', sortOrder: 3 },
+          { optionId: 'earthy', text: 'Earthy & Spicy', value: 'earthy', icon: '🌱', sortOrder: 4 },
+          { optionId: 'caramel', text: 'Caramel & Sweet', value: 'caramel', icon: '🍯', sortOrder: 5 }
+        ]
+      },
+      {
+        questionId: 'brewing-method',
+        question: 'How do you usually brew your coffee?',
+        description: 'Different brewing methods extract different flavors.',
+        answerType: 'single',
+        sortOrder: 3,
+        options: [
+          { optionId: 'espresso', text: 'Espresso Machine', value: 'espresso', icon: '☕', sortOrder: 1 },
+          { optionId: 'pour-over', text: 'Pour Over (Chemex, V60)', value: 'pour-over', icon: '⏳', sortOrder: 2 },
+          { optionId: 'french-press', text: 'French Press', value: 'french-press', icon: '🧇', sortOrder: 3 },
+          { optionId: 'drip', text: 'Drip Coffee Maker', value: 'drip', icon: '⏲️', sortOrder: 4 },
+          { optionId: 'cold-brew', text: 'Cold Brew', value: 'cold-brew', icon: '🧊', sortOrder: 5 }
+        ]
+      },
+      {
+        questionId: 'time-of-day',
+        question: 'When do you typically drink coffee?',
+        description: 'Your preferred time might affect what coffee works best for you.',
+        answerType: 'single',
+        sortOrder: 4,
+        options: [
+          { optionId: 'morning', text: 'Morning (6am-10am)', value: 'morning', icon: '🌅', sortOrder: 1 },
+          { optionId: 'midday', text: 'Midday (10am-2pm)', value: 'midday', icon: '🌞', sortOrder: 2 },
+          { optionId: 'afternoon', text: 'Afternoon (2pm-6pm)', value: 'afternoon', icon: '🌇', sortOrder: 3 },
+          { optionId: 'evening', text: 'Evening (6pm+)', value: 'evening', icon: '🌃', sortOrder: 4 }
+        ]
+      },
+      {
+        questionId: 'caffeine',
+        question: 'Do you prefer regular or decaf coffee?',
+        description: 'We have excellent options for both preferences.',
+        answerType: 'single',
+        sortOrder: 5,
+        options: [
+          { optionId: 'regular', text: 'Regular (Caffeinated)', value: 'regular', icon: '⚡', sortOrder: 1 },
+          { optionId: 'decaf', text: 'Decaf', value: 'decaf', icon: '😴', sortOrder: 2 },
+          { optionId: 'either', text: 'Either is fine', value: 'either', icon: '🤷', sortOrder: 3 }
+        ]
+      }
+    ];
+    
+    // Insert questions and their options
+    for (const question of questions) {
+      // Skip if this question already exists
+      if (!existingQuestionIds.has(question.questionId)) {
+        // Insert the question
+        await db.insert(quizQuestions).values({
           questionId: question.questionId,
           question: question.question,
           description: question.description,
           answerType: question.answerType,
           sortOrder: question.sortOrder
-        }).returning();
-        
-        // Insert options for this question
-        for (const option of question.options) {
+        });
+      }
+      
+      // Insert the options for this question
+      for (const option of question.options) {
+        // Skip if this option already exists by checking the composite key (questionId + optionId)
+        const optionKey = `${question.questionId}-${option.optionId}`;
+        if (!existingOptionIds.has(optionKey)) {
           await db.insert(quizOptions).values({
             questionId: question.questionId,
             optionId: option.optionId,
@@ -659,61 +690,90 @@ export class DatabaseStorage implements IStorage {
       }
     }
   }
-  
+
   // Initialize mascot guides
   private async initMascotGuides(): Promise<void> {
-    const existingGuides = await db.select().from(mascotGuides);
+    // Get all existing guide names for checking
+    const existingGuides = await db.select({ name: mascotGuides.name }).from(mascotGuides);
+    const existingGuideNames = new Set(existingGuides.map(g => g.name));
     
-    // Only initialize if the table is empty
-    if (existingGuides.length === 0) {
-      const guides = [
-        {
-          name: 'welcome',
-          message: "Welcome to CoffeesIQ! I'm your coffee guide. I'll help you discover amazing coffees!",
-          mood: 'waving',
-          position: 'bottom-right',
-          priority: 100,
-          delay: 1000,
-          autoHide: false,
-          hideAfter: null,
-          condition: "pathname === '/' && visited.length === 0"
-        },
-        {
-          name: 'home-page',
-          message: "This is your coffee dashboard. Explore new flavors, track your favorites, and connect with other coffee lovers!",
-          mood: 'explaining',
-          position: 'bottom-left',
-          priority: 90,
-          delay: null,
-          autoHide: false,
-          hideAfter: null,
-          condition: "pathname === '/' && !visited.includes('home-page')"
-        },
-        {
-          name: 'quiz-intro',
-          message: "Ready to find your perfect coffee match? Answer a few questions and I'll help you discover new favorites!",
-          mood: 'excited',
-          position: 'top-right',
-          priority: 85,
-          delay: null,
-          autoHide: false,
-          hideAfter: null,
-          condition: "pathname === '/quiz' && !visited.includes('quiz-intro')"
-        },
-        {
-          name: 'add-coffee',
-          message: "Adding a new coffee? You can scan the barcode or enter details manually. Don't forget to add flavor notes!",
-          mood: 'explaining',
-          position: 'top-right',
-          priority: 80,
-          delay: null,
-          autoHide: false,
-          hideAfter: null,
-          condition: "pathname === '/add-coffee' && !visited.includes('add-coffee')"
-        }
-      ];
-      
-      for (const guide of guides) {
+    const guides = [
+      {
+        name: "welcome",
+        message: "I'm your coffee companion! I'll guide you through the app and help you discover amazing coffees. Let's get started!",
+        mood: "waving",
+        position: "center",
+        priority: 100,
+        condition: "first-visit",
+        autoHide: true,
+        hideAfter: 5000
+      },
+      {
+        name: "add-coffee",
+        message: "Found a great coffee? Tap here to add it to your collection. You can scan the barcode or enter details manually.",
+        mood: "excited",
+        position: "bottom-right",
+        priority: 90,
+        condition: "empty-collection",
+        autoHide: true,
+        hideAfter: 5000
+      },
+      {
+        name: "try-quiz",
+        message: "Not sure what coffee you'll like? Try our quick quiz and get personalized recommendations!",
+        mood: "thinking",
+        position: "top-right",
+        priority: 85,
+        condition: "new-user",
+        autoHide: true,
+        hideAfter: 5000
+      },
+      {
+        name: "review-coffee",
+        message: "Share your thoughts on coffees you've tried. Your reviews help others discover great beans!",
+        mood: "happy",
+        position: "bottom-left",
+        priority: 80,
+        condition: "after-add-coffee",
+        autoHide: true,
+        hideAfter: 5000
+      },
+      {
+        name: "flavor-notes",
+        message: "Coffee has complex flavors! Look for notes like 'fruity', 'chocolate', or 'nutty' to find beans you'll love.",
+        mood: "explaining",
+        position: "top-left",
+        priority: 75,
+        condition: "viewing-coffee",
+        autoHide: true,
+        hideAfter: 5000
+      },
+      {
+        name: "roast-levels",
+        message: "Light roasts are bright and acidic, medium roasts are balanced, and dark roasts are bold and rich.",
+        mood: "explaining",
+        position: "top-right",
+        priority: 70,
+        condition: "viewing-roast-info",
+        autoHide: true,
+        hideAfter: 5000
+      },
+      {
+        name: "brewing-tips",
+        message: "For the best cup, use freshly ground beans, filtered water at 195-205°F, and the right coffee-to-water ratio.",
+        mood: "explaining",
+        position: "bottom-right",
+        priority: 65,
+        condition: "after-review",
+        autoHide: true,
+        hideAfter: 5000
+      }
+    ];
+    
+    // Insert guides
+    for (const guide of guides) {
+      // Skip if this guide already exists
+      if (!existingGuideNames.has(guide.name)) {
         await db.insert(mascotGuides).values(guide);
       }
     }
@@ -721,110 +781,113 @@ export class DatabaseStorage implements IStorage {
   
   // Initialize shop products
   private async initShopProducts(): Promise<void> {
-    const existingProducts = await db.select().from(shopProducts);
+    // Get all existing product titles for checking
+    const existingProducts = await db.select({ title: shopProducts.title }).from(shopProducts);
+    const existingProductTitles = new Set(existingProducts.map(p => p.title));
     
-    // Only initialize if the table is empty
-    if (existingProducts.length === 0) {
-      const products = [
-        {
-          title: "Ethiopian Yirgacheffe",
-          description: "Bright and fruity with notes of blueberry and citrus.",
-          price: "16.99",
-          image: "/images/coffees/ethiopian.jpg",
-          rating: 4.8,
-          origin: "Ethiopia",
-          roastLevel: "Light",
-          weight: "12 oz",
-          inStock: true,
-          featured: true
-        },
-        {
-          title: "Colombian Supremo",
-          description: "Sweet and balanced with caramel and nutty notes.",
-          price: "14.99",
-          image: "/images/coffees/colombian.jpg",
-          rating: 4.5,
-          origin: "Colombia",
-          roastLevel: "Medium",
-          weight: "12 oz",
-          inStock: true,
-          featured: false
-        },
-        {
-          title: "Sumatra Mandheling",
-          description: "Earthy and full-bodied with notes of chocolate and cedar.",
-          price: "15.99",
-          image: "/images/coffees/sumatra.jpg",
-          rating: 4.3,
-          origin: "Indonesia",
-          roastLevel: "Dark",
-          weight: "12 oz",
-          inStock: true,
-          featured: false
-        },
-        {
-          title: "Breakfast Blend",
-          description: "Smooth and bright morning blend with citrus notes.",
-          price: "13.99",
-          image: "/images/coffees/breakfast.jpg",
-          rating: 4.2,
-          origin: "Central America Blend",
-          roastLevel: "Medium",
-          weight: "12 oz",
-          inStock: true,
-          featured: true
-        },
-        {
-          title: "Guatemala Antigua",
-          description: "Complex with chocolate, spice and smoky undertones.",
-          price: "17.99",
-          image: "/images/coffees/guatemala.jpg",
-          rating: 4.7,
-          origin: "Guatemala",
-          roastLevel: "Medium",
-          weight: "12 oz",
-          inStock: false,
-          featured: false
-        },
-        {
-          title: "Espresso Roast",
-          description: "Bold and rich with caramel sweetness.",
-          price: "15.99",
-          image: "/images/coffees/espresso.jpg",
-          rating: 4.6,
-          origin: "Brazil/Colombia Blend",
-          roastLevel: "Dark",
-          weight: "12 oz",
-          inStock: true,
-          featured: false
-        },
-        {
-          title: "Costa Rica Tarrazu",
-          description: "Bright acidity with honey and citrus notes.",
-          price: "16.99",
-          image: "/images/coffees/costa-rica.jpg",
-          rating: 4.4,
-          origin: "Costa Rica",
-          roastLevel: "Medium-Light",
-          weight: "12 oz",
-          inStock: true,
-          featured: true
-        },
-        {
-          title: "Swiss Water Decaf",
-          description: "Full flavor with notes of chocolate and nuts without the caffeine.",
-          price: "15.99",
-          image: "/images/coffees/decaf.jpg",
-          rating: 4.1,
-          origin: "Colombian",
-          roastLevel: "Medium",
-          weight: "12 oz",
-          inStock: true,
-          featured: false
-        }
-      ];
-      
-      for (const product of products) {
+    const products = [
+      {
+        title: "CoffeesIQ Signature Blend",
+        description: "Our house blend featuring beans from Ethiopia and Colombia, with notes of chocolate, caramel, and citrus. Medium roast.",
+        price: "1499", // $14.99
+        image: "/images/products/signature-blend.jpg",
+        rating: 4.8,
+        inStock: true,
+        featured: true,
+        roastLevel: "medium",
+        origin: "Ethiopia, Colombia",
+        weight: "340" // 12oz
+      },
+      {
+        title: "Ethiopia Yirgacheffe",
+        description: "Single-origin Ethiopian beans with vibrant floral and citrus notes. Light-medium roast perfect for pour-over brewing.",
+        price: "1699",
+        image: "/images/products/ethiopia-yirgacheffe.jpg",
+        rating: 4.7,
+        inStock: true,
+        featured: true,
+        roastLevel: "light-medium",
+        origin: "Ethiopia",
+        weight: "340"
+      },
+      {
+        title: "Sumatra Mandheling",
+        description: "Bold, earthy Indonesian beans with notes of dark chocolate, cedar, and spice. Dark roast ideal for espresso or French press.",
+        price: "1599",
+        image: "/images/products/sumatra-mandheling.jpg",
+        rating: 4.6,
+        inStock: true,
+        featured: false,
+        roastLevel: "dark",
+        origin: "Indonesia",
+        weight: "340"
+      },
+      {
+        title: "Costa Rica Tarrazu",
+        description: "Balanced, bright Costa Rican beans with notes of honey, orange, and almond. Medium roast for all brewing methods.",
+        price: "1599",
+        image: "/images/products/costa-rica-tarrazu.jpg",
+        rating: 4.9,
+        inStock: true,
+        featured: true,
+        roastLevel: "medium",
+        origin: "Costa Rica",
+        weight: "340"
+      },
+      {
+        title: "CoffeesIQ Ceramic Mug",
+        description: "12oz ceramic mug featuring our mascot and logo. Microwave and dishwasher safe.",
+        price: "1299",
+        image: "/images/products/ceramic-mug.jpg",
+        rating: 4.5,
+        inStock: true,
+        featured: true,
+        roastLevel: "n/a",
+        origin: "n/a",
+        weight: "350"
+      },
+      {
+        title: "Pour-Over Coffee Dripper",
+        description: "Ceramic pour-over dripper with our logo. Makes 1-2 cups of perfectly extracted coffee.",
+        price: "2499",
+        image: "/images/products/pour-over-dripper.jpg",
+        rating: 4.6,
+        inStock: true,
+        featured: false,
+        roastLevel: "n/a",
+        origin: "n/a",
+        weight: "400"
+      },
+      {
+        title: "Hand Coffee Grinder",
+        description: "Adjustable ceramic burr grinder for the freshest coffee. Compact and perfect for travel.",
+        price: "3999",
+        image: "/images/products/hand-grinder.jpg",
+        rating: 4.7,
+        inStock: true,
+        featured: true,
+        roastLevel: "n/a",
+        origin: "n/a",
+        weight: "450"
+      },
+      {
+        title: "Digital Coffee Scale",
+        description: "Precision scale with timer function. Measure your coffee and water accurately for the perfect cup.",
+        price: "2999",
+        image: "/images/products/digital-scale.jpg",
+        rating: 4.8,
+        inStock: true,
+        featured: false,
+        roastLevel: "n/a",
+        origin: "n/a",
+        weight: "250"
+      }
+    ];
+    
+    // Insert products
+    for (const product of products) {
+      // Skip if this product already exists
+      if (!existingProductTitles.has(product.title)) {
         await db.insert(shopProducts).values(product);
       }
     }

@@ -88,8 +88,8 @@ export function MascotProvider({ children }: MascotProviderProps) {
   
   // Set mascot visibility
   const setMascotVisibility = (visible: boolean) => {
-    setMascotVisible(visible);
-    localStorage.setItem('coffee-compass-mascot-visible', JSON.stringify(visible));
+    setMascotVisible(false);
+    localStorage.setItem('coffee-compass-mascot-visible', JSON.stringify(false));
   };
   
   // Mark current path as visited
